@@ -1,6 +1,11 @@
 import SceneBouncingBubbles from "./js/scenario/SceneBouncingBubbles"
+import { askMotionAccess } from "./js/utils/DeviceAccess"
 
-const scene1_ = new SceneBouncingBubbles("canvas-scene-1", 5)
+document.getElementById("btn-access").addEventListener("click", () => { 
+    askMotionAccess()
+})
+
+const scene1_ = new SceneBouncingBubbles("canvas-scene-1", 40)
 scene1_.draw()
 
 const scene2_ = new SceneBouncingBubbles("canvas-scene-2", 10)
