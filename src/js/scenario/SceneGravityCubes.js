@@ -61,7 +61,19 @@ export default class SceneGravityCubes extends Scene3D {
         if(this.walls) {
             if(this.walls.left) {
                 this.walls.left.setSize(WALL_THICKNESS, this.height) 
-                this.walls.left.position.x = -this.width / 2
+                this.walls.left.position.x = -this.width / 2 + WALL_THICKNESS / 2
+            }
+            if(this.walls.top) {
+                this.walls.top.setSize(this.width - 2 * WALL_THICKNESS, WALL_THICKNESS) 
+                this.walls.top.position.y = this.height / 2 - WALL_THICKNESS / 2
+            }
+            if(this.walls.right) {
+                this.walls.right.setSize(WALL_THICKNESS, this.height) 
+                this.walls.right.position.x = this.width / 2 - WALL_THICKNESS / 2
+            }
+            if(this.walls.bottom) {
+                this.walls.bottom.setSize(this.width - 2 * WALL_THICKNESS, WALL_THICKNESS) 
+                this.walls.bottom.position.y = -this.height / 2 + WALL_THICKNESS / 2
             }
         }
 
