@@ -70,5 +70,7 @@ export default class Scene3D extends THREE.Scene {
 
     orientation() { }
 
-    destroy() { }
+    destroy() {
+        // voir le cours étape 5.1
+    }
 }
