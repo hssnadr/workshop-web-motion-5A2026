@@ -26,7 +26,7 @@ body {
     margin: 0;
     
     /* pour tester la gestion de la visibilité */
-    /* padding-block: 100vh; */
+    padding-block: 100vh;
 }
 
 canvas {

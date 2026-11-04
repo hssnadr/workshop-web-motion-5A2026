@@ -7,6 +7,7 @@ export default class DomElement {
     position
 
     get isVisible() { return this.position.bottom > 0 && this.position.top < window.innerHeight }
+    get ratio() { return this.height == 0 ? 1 : this.width / this.height }
 
     constructor(id) {
         this.id = id
