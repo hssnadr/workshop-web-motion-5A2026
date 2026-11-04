@@ -8,12 +8,12 @@ export default class Debug {
 
     constructor() {
         if(window.location.hash === '#debug') {
-            // this.ui = new GUI()
+            this.ui = new GUI()
         }
     }
 
     set domDebug(content) {
-        // if (!this.active) return
+        if (!this.active) return
         const element_ = document.getElementById("debug")
         if (!element_) return
         element_.style.display = "block"

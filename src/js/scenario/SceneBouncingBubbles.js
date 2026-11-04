@@ -9,6 +9,7 @@ const MAX_SPEED = 300 // pixel / seconde
 
 class Bubble {
     #context
+
     radius = 10
     /** position */
     x = 0
@@ -16,6 +17,11 @@ class Bubble {
     /** vitesse */
     vx = 0
     vy = 0
+
+    /** drift */
+    driftX = 0
+    driftY = 0
+    gStrength = 0
 
     constructor(context) {
         this.#context = context
@@ -28,14 +34,22 @@ class Bubble {
     update(width, heigth) {
         /** update de la position : GlobalContext = singleton -> toujours la même instance au new */
         const delta_ = new GlobalContext().time.delta / 1000 // en secondes
-        this.x += this.vx * delta_
-        this.y += this.vy * delta_
-
+        
         /** inversion de la vitesse au bord */
         this.vx = this.x < this.radius ? Math.abs(this.vx) : this.vx
         this.vx = this.x > width - this.radius ? -Math.abs(this.vx) : this.vx
         this.vy = this.y < this.radius ? Math.abs(this.vy) : this.vy
         this.vy = this.y > heigth - this.radius ? -Math.abs(this.vy) : this.vy
+        
+        /** la gravité est annulée par les bords */
+        const isOnBorderX_ = this.x < this.radius || this.x > width - this.radius
+        const isOnBorderY_ = this.y > heigth - this.radius || this.y < this.radius
+        this.driftX = isOnBorderX_ ? 0 : this.driftX
+        this.driftY = isOnBorderY_ ? 0 : this.driftY
+
+        /** update position */
+        this.x += (this.vx + this.driftX * this.gStrength) * delta_
+        this.y += (this.vy + this.driftY * this.gStrength) * delta_
     }
 
     draw() {
@@ -58,7 +72,8 @@ export default class SceneBouncingBubbles extends Scene2D {
             nBubbles: nBubbles,
             radius: CIRCLE_RADIUS,
             threshold: 200,
-            lineWidth: STROKE_WIDTH
+            lineWidth: STROKE_WIDTH,
+            gStrength: 400
         }
         if (this.debugFolder) {
             this.debugFolder.add(this.domElement, 'isVisible').listen().disable()
@@ -73,6 +88,9 @@ export default class SceneBouncingBubbles extends Scene2D {
             })
             this.debugFolder.add(this.params, 'threshold', 0, 500)
             this.debugFolder.add(this.params, 'lineWidth', 1, 20, 1)
+            this.debugFolder.add(this.params, 'gStrength', 0, 500, 1).onChange(
+                (value) => { this.bubbleCollection.forEach(b => b.gStrength = value ) }
+            )
         }
 
         /** init */
@@ -95,6 +113,7 @@ export default class SceneBouncingBubbles extends Scene2D {
             bubble_.radius = this.params.radius
             bubble_.x = this.width * Math.random()
             bubble_.y = this.height * Math.random()
+            bubble_.gStrength = this.params.gStrength
 
             /** référencer nouvelle bulle */
             this.bubbleCollection.push(bubble_)
@@ -167,5 +186,10 @@ export default class SceneBouncingBubbles extends Scene2D {
         const gammaNormalize_ = gamma / 90
 
         this.debug.domDebug = `betaNorm ${ betaNormalize_.toFixed(1) } · gammaNorm ${gammaNormalize_.toFixed(1)}`
+        this.bubbleCollection.forEach(b => {
+            b.driftX = gammaNormalize_
+            b.driftY = betaNormalize_
+        })
+
     }
 }
